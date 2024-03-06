@@ -10,6 +10,43 @@ class CalculadoraImcPage extends StatefulWidget {
 }
 
 class _CalculadoraImcPageState extends State<CalculadoraImcPage> {
+  final TextEditingController weightController = TextEditingController();
+  final TextEditingController heightController = TextEditingController();
+
+  String _infoText = "Informe seus dados";
+
+  void _resetFields() {
+    setState(() {
+      weightController.text = '';
+      heightController.text = '';
+      _infoText = "Informe seus dados";
+    });
+  }
+
+  void calculate() {
+    setState(() {
+      double weight = double.parse(weightController.text);
+      // conversão pq a altura precisa ser em metros para o calculo
+      double height = double.parse(heightController.text) / 100;
+
+      double imc = weight / (height * height);
+      String imcAsPrecision = imc.toStringAsPrecision(3);
+      if (imc < 18.6) {
+        _infoText = "Abaixo do peso ($imcAsPrecision)";
+      } else if(imc >= 18.6 && imc < 24.9){
+        _infoText = "Peso ideal ($imcAsPrecision)";
+      }else if(imc >= 24.9 && imc < 29.9){
+        _infoText = "Levemente acima do peso ($imcAsPrecision)";
+      }else if(imc >= 29.9 && imc < 34.9){
+        _infoText = "Obesidade Grau 1 ($imcAsPrecision)";
+      }else if(imc >= 34.9 && imc < 39.9){
+        _infoText = "Obesidade Grau 2 ($imcAsPrecision)";
+      }else if(imc >= 40){
+        _infoText = "Obesidade Grau 3 ($imcAsPrecision)";
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -24,7 +61,10 @@ class _CalculadoraImcPageState extends State<CalculadoraImcPage> {
               color: Colors.white, fontWeight: FontWeight.w700, fontSize: 24),
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                _resetFields();
+                log("reset de campos");
+              },
               icon: const Icon(Icons.refresh, color: Colors.white),
             ),
           ],
@@ -37,28 +77,31 @@ class _CalculadoraImcPageState extends State<CalculadoraImcPage> {
             children: [
               const Icon(Icons.person_2_outlined,
                   size: 120.0, color: Colors.blue),
-              const TextField(
+              TextField(
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Peso (kg)",
                   labelStyle: TextStyle(color: Colors.blue, fontSize: 25.0),
                 ),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.blue, fontSize: 25.0),
+                style: const TextStyle(color: Colors.blue, fontSize: 25.0),
+                controller: weightController,
               ),
-              const TextField(
+              TextField(
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Altura (cm)",
                   labelStyle: TextStyle(color: Colors.blue, fontSize: 25.0),
                 ),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.blue, fontSize: 25.0),
+                style: const TextStyle(color: Colors.blue, fontSize: 25.0),
+                controller: heightController,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 child: ElevatedButton(
                   onPressed: () {
+                    calculate();
                     log('Clique no calcular');
                   },
                   style: const ButtonStyle(
@@ -80,10 +123,10 @@ class _CalculadoraImcPageState extends State<CalculadoraImcPage> {
                   ),
                 ),
               ),
-              const Text(
-                "Info",
+              Text(
+                _infoText,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.blue, fontSize: 25.0),
+                style: const TextStyle(color: Colors.blue, fontSize: 25.0),
               ),
             ],
           ),
