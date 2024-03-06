@@ -13,7 +13,7 @@ class _CalculadoraImcPageState extends State<CalculadoraImcPage> {
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _infoText = "Informe seus dados";
 
@@ -22,6 +22,7 @@ class _CalculadoraImcPageState extends State<CalculadoraImcPage> {
     heightController.text = '';
     setState(() {
       _infoText = "Informe seus dados";
+      _formKey = GlobalKey<FormState>();
     });
   }
 
